@@ -4,6 +4,7 @@ from ReadWorkpackes import read_workpackages
 from StoreWorkpackages import write_workpackage
 from StoreWorkpackages import open_tag
 from StoreWorkpackages import close_tag
+import Workpackage as Wp
 
 
 class EditWorkpackage(tk.Frame):
@@ -41,9 +42,27 @@ class EditWorkpackage(tk.Frame):
             self.wp_list.insert(tk.END, item)
         self.wp_list.selection_set(0)
 
+    def update_list(self, ltype, item_list):
+        lines = []
+        if ltype == 'wp':
+            for wp in item_list:
+                lines.append(wp.wp_name)
+        elif ltype == 'wd':
+            for wd in item_list:
+                lines.append((str(wd.date)))
+        elif ltype == 'bt':
+            for wt in item_list:
+                lines.append(str(wt.start_time))
+        else:
+            for wt in item_list:
+                lines.append(str(wt.end_time))
+        self.add_items(lines)
+
 
 def load_wpckgs():
     global workpackages, filename
+    if len(workpackages) > 0:
+        create_new_file()
     filename = filedialog.askopenfilename(initialdir='./Dateien')
     file = open(filename, 'r', encoding='utf-8')
     wp_name_list = []
@@ -133,7 +152,41 @@ def fill_child_list(ltype, index):
         wt = wd.worktimes[et_ix]
         list_end.wp_text.set(str(wt.end_time))
 
-    
+
+def create_new_file():
+    global workpackages, wp_ix, wd_ix, bt_ix, et_ix, filename
+    workpackages = []
+    filename = ""
+    wp_ix = 0
+    wd_ix = 0
+    bt_ix = 0
+    et_ix = 0
+
+
+def apply_values():
+    # get entry values
+    wp_name = list_wp.wp_text.get()
+    wd_date = list_wd.wp_text.get()
+    begin_time = list_begin.wp_text.get()
+    end_time = list_end.wp_text.get()
+    # get selected objects
+    wp_cur = workpackages[wp_ix]
+    wd_cur = wp_cur.workdays[wd_ix]
+    wt_cur = wd_cur.worktimes[bt_ix]
+    if wp_name != "" and wp_cur.wp_name != wp_name:
+        wp_cur.wp_name = wp_name
+        list_wp.update_list('wp', workpackages)
+    if wd_date != "" and wd_cur.date != wd_date:
+        wd_cur.date = Wp.Date(wd_date)
+        list_wd.update_list('wd', wp_cur.workdays)
+    if begin_time != "" and wt_cur.start_time != begin_time:
+        wt_cur.start_time = Wp.Time(begin_time)
+        list_begin.update_list('bt', wd_cur.worktimes)
+    if end_time != "" and wt_cur.end_time != end_time:
+        wt_cur.end_time = Wp.Time(end_time)
+        list_end.update_list('et', wd_cur.worktimes)
+
+
 workpackages = []
 filename = ""
 wp_ix = 0
@@ -157,5 +210,11 @@ list_wp = EditWorkpackage(root, 0, 0, "Arbeitspakete", 20, 'wp')
 list_wd = EditWorkpackage(root, 0, 2, "Arbeitstage", 10, 'wd')
 list_begin = EditWorkpackage(root, 0, 3, "Beginn", 8, 'bt')
 list_end = EditWorkpackage(root, 0, 4, "Ende", 8, 'et')
+
+button_apply = tk.Button(root, text='Übernehmen', command=apply_values)
+button_apply.grid(row=1, column=0, columnspan=2)
+
+button_add = tk.Button(root, text='Hinzufügen')
+button_add.grid(row=1, column=2, columnspan=3)
 
 root.mainloop()
