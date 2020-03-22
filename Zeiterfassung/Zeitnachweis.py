@@ -12,6 +12,7 @@ from BerichtAnzeigen import display_report
 from BerichtAusdrucken import report_work_summary
 from BerichtAusdrucken import report_workday_summary
 from BerichtAusdrucken import report_workpackage_summary
+from Zeitkorrektur import show_correction_dialog
 
 
 class DispWorkpackages(tk.Frame):
@@ -71,6 +72,7 @@ class DispWorkpackages(tk.Frame):
             date = dt.date.today().strftime("%d.%m.")
             date = str(Wp.Date(date))
             wp.add_workday(date)
+            self.wd_date.set(date)
         else:
             wp.add_workday(date)
         workpackages.append(wp)
@@ -87,7 +89,9 @@ class DispWorkpackages(tk.Frame):
             else:
                 wp_cur.add_workday(date)
             if time == "":
-                wp_cur.begin_working(input_time())
+                time = input_time()
+                wp_cur.begin_working(time)
+                self.begin_time.set(time)
             else:
                 wp_cur.begin_working(time)
 
@@ -97,7 +101,9 @@ class DispWorkpackages(tk.Frame):
         if ix >= 0:
             wp_cur = workpackages[ix]
             if time == "":
-                wp_cur.finish_working(input_time())
+                time = input_time()
+                wp_cur.finish_working(time)
+                self.begin_time.set("")
             else:
                 wp_cur.finish_working(time)
             overview.fill_times(wp_cur.cur_workday)
@@ -165,6 +171,10 @@ class MainMenu(tk.Menu):
         self.sub_menu.add_command(label='Speichern', command=save_wpckgs)
         self.sub_menu.add_command(label='Speichern unter...', command=save_wpckgs_as)
 
+        self.sub_menu_edit = tk.Menu(self, tearoff=False)
+        self.add_cascade(label='Ändern', menu=self.sub_menu_edit)
+        self.sub_menu_edit.add_command(label='Korrigieren', command=self.correction)
+
         self.sub_menu_rep = tk.Menu(self, tearoff=False)
         self.add_cascade(label='Bericht', menu=self.sub_menu_rep)
         self.sub_menu_rep.add_command(label='Zeitnachweis', command=self.show_report)
@@ -185,6 +195,10 @@ class MainMenu(tk.Menu):
         date = self.dialog.wd_date.get()
         report = report_workday_summary(date, workpackages)
         display_report(report)
+
+    @staticmethod
+    def correction():
+        show_correction_dialog(workpackages)
 
 
 def new_file():
