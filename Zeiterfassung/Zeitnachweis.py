@@ -12,7 +12,7 @@ from BerichtAnzeigen import display_report
 from BerichtAusdrucken import report_work_summary
 from BerichtAusdrucken import report_workday_summary
 from BerichtAusdrucken import report_workpackage_summary
-from Zeitkorrektur import show_correction_dialog
+from Zeitkorrektur import CorrectionDialog
 
 
 class DispWorkpackages(tk.Frame):
@@ -198,7 +198,7 @@ class MainMenu(tk.Menu):
 
     @staticmethod
     def correction():
-        show_correction_dialog(workpackages)
+        CorrectionDialog(root, workpackages)
 
 
 def new_file():
