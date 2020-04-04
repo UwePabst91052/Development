@@ -65,6 +65,7 @@ class DispWorkpackages(tk.Frame):
         if wp_name not in self.select_wp['values']:
             self.select_wp['values'] += (wp_name,)
             wp = Wp.Workpackage(wp_name)
+            workpackages.append ( wp )
         else:
             wp = workpackages[self.select_wp.current()]
         date = self.wd_date.get()
@@ -75,7 +76,6 @@ class DispWorkpackages(tk.Frame):
             self.wd_date.set(date)
         else:
             wp.add_workday(date)
-        workpackages.append(wp)
         overview.fill_dates(wp)
 
     def begin_work(self):
