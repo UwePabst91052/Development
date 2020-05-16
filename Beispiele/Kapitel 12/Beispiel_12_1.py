@@ -7,8 +7,8 @@ import Auto
 
 def main():
     # Hauptprogramm
-    auto_eins = Auto.Auto("Peugeot", "Silber", 100, 3)
-    auto_zwei = Auto.Auto("Hyundai", "Weiß", 55, 3)
+    auto_eins = Auto.Auto("Kia", "Silber", 50, 3)
+    auto_zwei = Auto.Auto("Bentley", "Weiß", 150, 5)
 
     print("\nDaten von Auto eins:")
     auto_eins.zeige_daten()

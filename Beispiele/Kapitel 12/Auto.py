@@ -17,6 +17,8 @@ class Auto:
         logfile.write(datetime.now().strftime("%d.%m.%Y - %H:%M:%S") + " : ")
 
         logfile.write("Neues Auto der Marke {0} erstellt\n".format(marke))
+        logfile.write("Farbe: {0}\n".format(farbe))
+        logfile.write("Leistung: {0}\n".format(leistung))
 
     def zeige_daten(self):
         print("Marke:", self.marke)
