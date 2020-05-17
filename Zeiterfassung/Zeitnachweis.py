@@ -9,7 +9,9 @@ from StoreWorkpackages import write_workpackage
 from StoreWorkpackages import open_tag
 from StoreWorkpackages import close_tag
 from BerichtAnzeigen import display_report
+from BerichtAnzeigen import input_timespan
 from BerichtAusdrucken import report_work_summary
+from BerichtAusdrucken import report_work_summary_timespan
 from BerichtAusdrucken import report_workday_summary
 from BerichtAusdrucken import report_workpackage_summary
 from Zeitkorrektur import CorrectionDialog
@@ -180,6 +182,7 @@ class MainMenu(tk.Menu):
         self.sub_menu_rep.add_command(label='Zeitnachweis', command=self.show_report)
         self.sub_menu_rep.add_command(label='Arbeitspaket', command=self.show_workpackage)
         self.sub_menu_rep.add_command(label='Arbeitstag', command=self.show_workday)
+        self.sub_menu_rep.add_command(label="Gleitzeitsaldo", command=self.show_balance)
 
     @staticmethod
     def show_report():
@@ -194,6 +197,11 @@ class MainMenu(tk.Menu):
     def show_workday(self):
         date = self.dialog.wd_date.get()
         report = report_workday_summary(date, workpackages)
+        display_report(report)
+
+    def show_balance(self):
+        timespan = input_timespan()
+        report = report_work_summary_timespan("Uwe Pabst", workpackages, timespan[0], timespan[1])
         display_report(report)
 
     @staticmethod
