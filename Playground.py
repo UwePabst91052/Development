@@ -14,7 +14,7 @@ class MyFrame(Frame):
     def on_click():
         print("Button clicked")
         print("Das ist ein Beispiel für Branching")
-        print("Hier wurde ein Fehler eingebaut")
+        print("Der Fehler wurde behoben")
 
 
 def load_wpckgs():
