@@ -13,6 +13,7 @@ class MyFrame(Frame):
     @staticmethod
     def on_click():
         print("Button clicked")
+        print("Das ist ein Beispiel für Branching")
 
 
 def load_wpckgs():
