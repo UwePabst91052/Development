@@ -23,7 +23,7 @@ def load_wpckgs():
 
 
 def print_timespan():
-    timespan = input_timespan()
+    timespan = input_timespan(root)
     print("Date from {0} until {1}".format(timespan[0], timespan[1]))
     print("Erster Teil des neuen Features")
     print("Rest des Features")
