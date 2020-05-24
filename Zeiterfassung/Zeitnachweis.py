@@ -11,9 +11,9 @@ from StoreWorkpackages import close_tag
 from BerichtAnzeigen import display_report
 from BerichtAnzeigen import input_timespan
 from BerichtAusdrucken import report_work_summary
-from BerichtAusdrucken import report_work_summary_timespan
 from BerichtAusdrucken import report_workday_summary
 from BerichtAusdrucken import report_workpackage_summary
+from BerichtAusdrucken import report_work_summary_timespan
 from Zeitkorrektur import CorrectionDialog
 
 
@@ -67,7 +67,7 @@ class DispWorkpackages(tk.Frame):
         if wp_name not in self.select_wp['values']:
             self.select_wp['values'] += (wp_name,)
             wp = Wp.Workpackage(wp_name)
-            workpackages.append ( wp )
+            workpackages.append(wp)
         else:
             wp = workpackages[self.select_wp.current()]
         date = self.wd_date.get()
@@ -200,9 +200,10 @@ class MainMenu(tk.Menu):
         display_report(report)
 
     def show_balance(self):
-        timespan = input_timespan()
+        timespan = input_timespan(root)
         report = report_work_summary_timespan("Uwe Pabst", workpackages, timespan[0], timespan[1])
         display_report(report)
+
 
     @staticmethod
     def correction():
