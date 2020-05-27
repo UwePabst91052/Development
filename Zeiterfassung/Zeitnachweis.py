@@ -205,8 +205,9 @@ class MainMenu(tk.Menu):
         timespan = input_timespan(root,
                                   keyList[0],
                                   keyList[len(keyList) - 1])
-        report = report_work_summary_timespan("Uwe Pabst", workpackages, timespan[0], timespan[1])
-        display_report(report)
+        if timespan[0] != "not set":
+            report = report_work_summary_timespan("Uwe Pabst", workpackages, timespan[0], timespan[1])
+            display_report(report)
 
 
     @staticmethod
