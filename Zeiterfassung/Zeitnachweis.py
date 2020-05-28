@@ -192,7 +192,10 @@ class MainMenu(tk.Menu):
 
     def show_workpackage(self):
         wp_name = self.dialog.wp_name.get()
-        report = report_workpackage_summary(wp_name, workpackages)
+        keylist = create_work_dictionary(workpackages)
+        report = report_workpackage_summary(wp_name, workpackages,
+                                            keylist[0],
+                                            keylist[len(keylist) - 1])
         display_report(report)
 
     def show_workday(self):
