@@ -25,10 +25,9 @@ class LoginDialog(Dialog):
         self.result = 1
 
 
-def input_chatname():
-    global root
+def input_chatname(parent):
 
-    input_dialog = LoginDialog(root, title="Chat Name eingeben")
+    input_dialog = LoginDialog(parent, title="Chat Name eingeben")
 
     if input_dialog.result is not None:
         chat_name = input_dialog.chat_name
@@ -36,10 +35,12 @@ def input_chatname():
     else:
         return "Agent007"
 
+
 def show_dialog():
-    global root
-    chatname = input_chatname()
+    # global root
+    chatname = input_chatname(root)
     print(chatname)
+
 
 if '__main__' == __name__:
     root = tk.Tk()
