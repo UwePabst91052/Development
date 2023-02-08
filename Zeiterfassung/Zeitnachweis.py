@@ -204,12 +204,13 @@ class MainMenu(tk.Menu):
         display_report(report)
 
     def show_balance(self):
-        keyList = create_work_dictionary(workpackages)
+        workpackageMerged = merge_wpckgs(workpackages)
+        keyList = create_work_dictionary(workpackageMerged)
         timespan = input_timespan(root,
                                   keyList[0],
                                   keyList[len(keyList) - 1])
         if timespan[0] != "not set":
-            report = report_work_summary_timespan("Uwe Pabst", workpackages, timespan[0], timespan[1])
+            report = report_work_summary_timespan("Uwe Pabst", workpackageMerged, timespan[0], timespan[1])
             display_report(report)
 
 
@@ -260,6 +261,20 @@ def save_wpckgs_as():
                                             filetypes=[('XML', '*.xml')])
     save_wpckgs()
     root.title("Zeitnachweis - " + os.path.basename(filename))
+
+def merge_wpckgs(workpackages):
+    mergedWorkpackages = []
+    mergedWorkpackages.append(Wp.Workpackage("Merged Workpackages"))
+
+    for wp in workpackages:
+        for wd in wp.workdays:
+            mergedWorkpackages[0].add_workday(str(wd.date))
+            for wt in wd.worktimes:
+                wt_strings = str(wt).split(" ", 3)
+                mergedWorkpackages[0].begin_working(wt_strings[0])
+                mergedWorkpackages[0].finish_working(wt_strings[1])
+    mergedWorkpackages[0].sort_workdays()
+    return mergedWorkpackages
 
 
 def input_time():
