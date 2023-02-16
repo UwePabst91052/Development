@@ -11,10 +11,12 @@ from StoreWorkpackages import close_tag
 from BerichtAnzeigen import display_report
 from BerichtAnzeigen import input_timespan
 from BerichtAusdrucken import create_work_dictionary
+from BerichtAusdrucken import create_work_merged
 from BerichtAusdrucken import report_work_summary
 from BerichtAusdrucken import report_workday_summary
 from BerichtAusdrucken import report_workpackage_summary
 from BerichtAusdrucken import report_work_summary_timespan
+from BerichtAusdrucken import report_number_of_workdays
 from Zeitkorrektur import CorrectionDialog
 
 
@@ -184,6 +186,7 @@ class MainMenu(tk.Menu):
         self.sub_menu_rep.add_command(label='Arbeitspaket', command=self.show_workpackage)
         self.sub_menu_rep.add_command(label='Arbeitstag', command=self.show_workday)
         self.sub_menu_rep.add_command(label="Gleitzeitsaldo", command=self.show_balance)
+        self.sub_menu_rep.add_command(label="Anzahl Arbeitstage", command=self.show_num_workdays)
 
     @staticmethod
     def show_report():
@@ -213,6 +216,34 @@ class MainMenu(tk.Menu):
             report = report_work_summary_timespan("Uwe Pabst", workpackageMerged, timespan[0], timespan[1])
             display_report(report)
 
+    def show_num_workdays(self):
+        keyList = create_work_dictionary(workpackages)
+        timespan = input_timespan(root,
+                                  keyList[0],
+                                  keyList[len(keyList) - 1])
+        keylist = create_work_merged(workpackages, timespan[0], timespan[1])
+        countOffice = 0
+        countHome = 0
+        countBoth = 0
+        evaluation_period = "Auswertungszeitraum vom {0} bis {1}".format(timespan[0], timespan[1])
+        for key in keylist.keys():
+            value = keylist[key]
+            if len(value) > 1:
+                result = check_real_worked(key, value[0], value[1])
+                if result[0]:
+                    countBoth += 1
+                else:
+                    if value[result[1]].wp_name == "Homeoffice":
+                        countHome += 1
+                    else:
+                        countOffice += 1
+            else:
+                if value[0].wp_name == "Homeoffice":
+                    countHome += 1
+                else:
+                    countOffice += 1
+        report = report_number_of_workdays(keylist, countHome, countOffice, countBoth, evaluation_period)
+        display_report(report)
 
     @staticmethod
     def correction():
@@ -240,6 +271,7 @@ def load_wpckgs():
     file.close()
     root.title("Zeitnachweis - " + os.path.basename(filename))
     for wp in workpackages:
+        wp.delete_workdays_wo_worktimes()
         wp_name_list.append(wp.wp_name)
     dialog.add_wp_names(wp_name_list)
 
@@ -276,6 +308,22 @@ def merge_wpckgs(workpackages):
     mergedWorkpackages[0].sort_workdays()
     return mergedWorkpackages
 
+def get_count_wt(date, wp):
+    for wd in wp.workdays:
+        if str(wd.date) == date:
+            return len(wd.worktimes)
+
+def check_real_worked(date, wp1, wp2):
+    countWtWp1 = get_count_wt(date, wp1)
+    countWtWp2 = get_count_wt(date, wp2)
+    if(countWtWp1 > 0 and countWtWp2 > 0):
+        return True, -1
+    else:
+        if countWtWp1 > 0:
+            index = 0
+        else:
+            index = 1
+        return False, index
 
 def input_time():
     time_str = dt.datetime.now().strftime("%H:%M:%S")
