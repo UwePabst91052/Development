@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "../../../AppData/Local/Programs/Python/Python39/Lib/site-packages"
+		},
+		{
+			"path": "../site-packages"
 		}
 	],
 	"settings": {},
